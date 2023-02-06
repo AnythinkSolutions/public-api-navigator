@@ -1,40 +1,47 @@
-import React, { useEffect } from "react";
-import useSWRImmutable  from "swr/immutable";
-import { ApiPaths, imageFetcher } from "@/utils/api-utils";
+import React from "react";
 import { useApiDetails, useSlugs } from "@/utils/hooks";
-import { Box, Grid, Table, TableBody, TableCell, TableRow, Typography } from "@mui/material";
-import Link from "next/link";
+import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 
 const ItemDetail = () => {
   const [slug, category] = useSlugs(["slug", "category"]);
   const item = useApiDetails(category, slug);
-  const topic = category.split(' ')[0];
-  const url = ApiPaths.unsplashTopic(topic);
-  // const { data, error } = useSWRImmutable(url, imageFetcher);
-
-  // useEffect(() => {
-  //   console.log("image data: ", data);
-  //   console.log("image error: ", error);
-  // }, [data, error]);
 
   return (
-    <Box>
-      <Grid container direction="column">
-        <Typography variant="h3">Item Detail: {slug} from category {category} </Typography>
-        <Link href="/math">Back to Category</Link>
-        <Link href="/">Back to Categories</Link>
+    <Box display="flex" justifyContent="center" px="25%" >
+      <TableContainer component={Paper} variant="outlined">
         <Table>
           <TableBody>
-            <TableRow><TableCell>{item?.API}</TableCell></TableRow>
-            <TableRow><TableCell>{item?.Auth}</TableCell></TableRow>
-            <TableRow><TableCell>{item?.Category}</TableCell></TableRow>
-            <TableRow><TableCell>{item?.Cors}</TableCell></TableRow>
-            <TableRow><TableCell>{item?.Description}</TableCell></TableRow>
-            <TableRow><TableCell>{item?.HTTPS}</TableCell></TableRow>
-            <TableRow><TableCell><a href={item?.Link} target="_blank" rel="noreferrer">{item?.Link}</a></TableCell></TableRow>
+            <TableRow>
+              <TableCell>API Name:</TableCell>
+              <TableCell>{item?.API}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Description</TableCell>
+              <TableCell>{item?.Description}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Authentication Type:</TableCell>
+              <TableCell>{item?.Auth}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Category:</TableCell>
+              <TableCell>{item?.Category}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>CORS?:</TableCell>
+              <TableCell>{item?.Cors}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>HTTPS?:</TableCell>
+              <TableCell>{item?.HTTPS}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Link:</TableCell>
+              <TableCell><a href={item?.Link} target="_blank" rel="noreferrer">{item?.Link}</a></TableCell>
+            </TableRow>
           </TableBody>
         </Table>
-      </Grid>
+      </TableContainer>
     </Box>
   )
 

@@ -8,6 +8,8 @@ import EntryCard from "./entry-card";
 import { useRouter } from "next/router";
 import FilterTextField from "./filter-text-field";
 import RandomButton from "./random-button";
+import axios from "axios";
+import { ApiResponse, OpenAiResponse } from "@/utils/app-types";
 
 const ItemList = () => {
   const categories = useCategories();
@@ -16,6 +18,19 @@ const ItemList = () => {
   const router = useRouter();
   const [filter, setFilter] = useState("");
   const apis = useMemo(() => category?.apis ?? [], [category]);
+
+  useEffect(() => {
+    const doEffect = async() => {
+      const url = ApiPaths.openAiImage(slug);
+      const response = await axios<ApiResponse<OpenAiResponse>>(url);
+      if(response.status === 200){
+        const aiResponse = response.data;
+        const imageUrls = aiResponse.data?.data;
+        console.log("Image urls: ", imageUrls);
+      }
+    }
+    if(slug) doEffect();
+  }, [slug]);
 
   const filtered = useMemo(() => {
     if(!filter) return apis;

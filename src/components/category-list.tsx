@@ -37,8 +37,8 @@ const CategoryList = () => {
       <Grid container spacing={{xs: 2, md: 3, lg: 4}}>
       { filteredCategories && (
           filteredCategories.map((cat, idx) => (
-            <Grid key={idx} item xs={6} sm={4} md={3} lg={2}>
-              <CategoryCard category={cat} />
+            <Grid key={idx} item xs={6} sm={4} lg={3}>
+              <CategoryCard category={cat} />  {/* to skip api image gen: skipImageGen={true} */}
             </Grid>
           )))}        
       </Grid>

@@ -1,20 +1,28 @@
-import React from "react";
+import React, { useMemo } from "react";
 import useSWRImmutable from "swr/immutable";
-import { Box, Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, LinearProgress, Stack, Typography } from "@mui/material";
 import Link from "next/link";
-import { ApiPaths, imageFetcher } from "@/utils/api-utils";
-import bgImage from "../../public/api-image.jpg";
-
+import { ApiPaths, openAiImageFetcher } from "@/utils/api-utils";
+import fallbackImage from "../../public/api-image.jpg";
 export interface ICategoryCardProps {
   category: string;
+  skipImageGen?: boolean;
 }
 
 const linearTransition = { transition: "all linear 300ms" };
 
-const CategoryCard = ({ category }: ICategoryCardProps ) => {
-  const topic = category.split(' ')[0];
-  const url = ApiPaths.unsplashTopic(topic);
-  // const { data, error } = useSWRImmutable(url, imageFetcher);
+const CategoryCard = ({ category, skipImageGen }: ICategoryCardProps ) => {
+  const url = skipImageGen ? null : ApiPaths.openAiImage(category);  //conditionally fetch images
+  const { data, error } = useSWRImmutable(url, openAiImageFetcher);
+
+  const imageUrl = useMemo(() => {
+    if(skipImageGen) return fallbackImage.src;
+    else if(data){
+      const url = data.data?.data[0].url;
+      return url;
+    }
+    else return undefined;
+  }, [skipImageGen, data]);
 
   return (
     <Box sx={{["a"]: { textDecoration: "none"}}}>
@@ -29,9 +37,17 @@ const CategoryCard = ({ category }: ICategoryCardProps ) => {
             }
           }
         }}>
-          <CardMedia sx={{ height: 140 }}
-            image={bgImage.src}
-            title="api background image" />
+          {imageUrl && (
+            <CardMedia sx={{ height: 140 }}
+              image={imageUrl}
+              title="api background image" />
+          )}
+          {!imageUrl && (
+            <Stack sx={{height: 140}} justifyContent="center" alignItems="center">
+              <LinearProgress sx={{width: "50%", height: "8px"}} />
+              <Typography variant="subtitle1">Generating image...</Typography>
+            </Stack>
+          )}
           <CardContent sx={{ textAlign: "center", px: 1 }}>
             <Typography >{category}</Typography>
           </CardContent>

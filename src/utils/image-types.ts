@@ -35,3 +35,12 @@ export type UnsplashImage = {
   links: UnsplashLinks;
   user: UnsplashUser;
 };
+
+export type OpenAiImageUrl = {
+  url: string;
+}
+
+export type OpenAiResponse = {
+  created: number;
+  data: OpenAiImageUrl[];
+}

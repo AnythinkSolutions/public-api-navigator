@@ -1,4 +1,4 @@
-export * from "./unsplash-types";
+export * from "./image-types";
 
 export type CategoriesData = {
   error?: string;
